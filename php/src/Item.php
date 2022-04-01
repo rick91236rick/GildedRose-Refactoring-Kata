@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace GildedRose;
 
-final class Item
+abstract class Item
 {
     /**
      * @var string
@@ -31,5 +31,19 @@ final class Item
     public function __toString(): string
     {
         return "{$this->name}, {$this->sell_in}, {$this->quality}";
+    }
+
+    protected function increaseQuality()
+    {
+        if ($this->quality < 50) {
+            $this->quality = $this->quality + 1;
+        }
+    }
+
+    protected function decreaseQuality()
+    {
+        if ($this->quality > 0) {
+            $this->quality = $this->quality - 1;
+        }
     }
 }
