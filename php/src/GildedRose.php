@@ -23,50 +23,53 @@ final class GildedRose
     public function updateQuality(): void
     {
         foreach ($this->items as $item) {
-
-            if ($item->name == 'Sulfuras, Hand of Ragnaros') {
-                continue;
-            }
-
-            $item->sell_in = $item->sell_in - 1;
-
-            if ($item->name == 'Aged Brie') {
-                if ($item->quality < 50) {
-                    $item->quality = $item->quality + 1;
-                }
-
-                if ($item->sell_in < 0) {
-                    if ($item->quality < 50) {
-                        $item->quality = $item->quality + 1;
+            switch ($item->name) {
+                case 'Sulfuras, Hand of Ragnaros':
+                    break;
+                case 'Aged Brie':
+                    $item->sell_in = $item->sell_in - 1;
+                    self::increaseQuality($item);
+                    if ($item->sell_in < 0) {
+                        self::increaseQuality($item);
                     }
-                }
-            } elseif ($item->name == 'Backstage passes to a TAFKAL80ETC concert') {
-                if ($item->quality < 50) {
-                    $item->quality = $item->quality + 1;
+                    break;
+                case 'Backstage passes to a TAFKAL80ETC concert':
+                    $item->sell_in = $item->sell_in - 1;
+                    self::increaseQuality($item);
                     if ($item->sell_in < 10) {
-                        if ($item->quality < 50) {
-                            $item->quality = $item->quality + 1;
-                        }
+                        self::increaseQuality($item);
                     }
                     if ($item->sell_in < 5) {
-                        if ($item->quality < 50) {
-                            $item->quality = $item->quality + 1;
-                        }
+                        self::increaseQuality($item);
                     }
-                }
-                if ($item->sell_in < 0) {
-                    $item->quality = 0;
-                }
-            } else {
-                if ($item->quality > 0) {
-                    $item->quality = $item->quality - 1;
-                }
-                if ($item->sell_in < 0) {
-                    if ($item->quality > 0) {
-                        $item->quality = $item->quality - 1;
+                    if ($item->sell_in < 0) {
+                        $item->quality = 0;
                     }
-                }
+                    break;
+                default:
+                    $item->sell_in = $item->sell_in - 1;
+
+                    self::decreaseQuality($item);
+
+                    if ($item->sell_in < 0) {
+                        self::decreaseQuality($item);
+                    }
+                    break;
             }
+        }
+    }
+
+    public function increaseQuality(Item $item)
+    {
+        if ($item->quality < 50) {
+            $item->quality = $item->quality + 1;
+        }
+    }
+
+    public function decreaseQuality(Item $item)
+    {
+        if ($item->quality > 0) {
+            $item->quality = $item->quality - 1;
         }
     }
 }
